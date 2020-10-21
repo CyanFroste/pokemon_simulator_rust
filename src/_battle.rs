@@ -2,7 +2,7 @@ use super::HashMap;
 use super::_move::Move;
 use super::_stat::Stat;
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct Battle {
 	pub stats: HashMap<String, f32>,
 	pub fainted: bool,

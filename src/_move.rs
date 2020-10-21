@@ -1,23 +1,44 @@
 use super::_pokemon::Pokemon;
 use super::_type::Type;
 use rand::Rng;
+use std::fmt::Display;
 
 #[allow(dead_code)]
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub enum Category {
 	Special,
 	Physical,
 	Status,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct Move {
 	pub name: String,
 	pub _type: Type,
 	category: Category,
-	pub power: Option<f32>,
+	pub power: f32,
 	pub accuracy: f32,
 	pub pp: u32,
+}
+
+impl Display for Move {
+	fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::result::Result<(), std::fmt::Error> {
+		let stringify = |c| match c {
+			Category::Physical => "Physical",
+			Category::Special => "Special",
+			Category::Status => "Status",
+		};
+		write!(
+			fmt,
+			"\nName:\t\t{}\nType:\t\t{}\nCategory:\t{}\nPower:\t\t{}\nAccuracy:\t{}\nPP:\t\t{}\n",
+			self.name,
+			self._type.name,
+			stringify(self.category.clone()),
+			self.power,
+			self.accuracy,
+			self.pp
+		)
+	}
 }
 
 impl Move {
@@ -26,7 +47,7 @@ impl Move {
 			name: name.to_string(),
 			_type,
 			category,
-			power: Some(power as f32),
+			power: power as f32,
 			accuracy: accuracy as f32,
 			pp,
 		}
@@ -85,7 +106,7 @@ impl Move {
 
 		let mut damage = if self.accurate() {
 			(((((2.0 * source.level) / 5.0 + 2.0)
-				* self.power.unwrap()
+				* self.power
 				* (applicable_attack / applicable_defense))
 				/ 50.0 + 2.0)
 				* damage_modifier)

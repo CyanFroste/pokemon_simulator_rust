@@ -4,8 +4,9 @@ use super::_move::Move;
 use super::_nature::Nature;
 use super::_stat::Stat;
 use super::_type::Type;
+use std::fmt::Display;
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct Pokemon {
 	pub name: String,
 	pub level: f32,
@@ -19,9 +20,49 @@ pub struct Pokemon {
 	pub battle: Battle,
 }
 
+impl Display for Pokemon {
+	fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::result::Result<(), std::fmt::Error> {
+		let n_types = self.types.len();
+		let types_stringified = if n_types == 2 {
+			format!("{} | {}", self.types[0].name, self.types[1].name)
+		} else {
+			format!("{}", self.types[0].name)
+		};
+		let moves_stringified = format!(
+			"{} | {} | {} | {}",
+			self.moves[0].name, self.moves[1].name, self.moves[2].name, self.moves[3].name
+		);
+		fn stringify_map(map: &HashMap<String, f32>) -> String {
+			format!(
+				"Hp: {} | Attack: {} | Defense: {}  | Sp. Atk: {} | Sp. Def: {} | Speed: {}",
+				map.get("HP").unwrap(),
+				map.get("ATTACK").unwrap(),
+				map.get("DEFENSE").unwrap(),
+				map.get("SP_ATK").unwrap(),
+				map.get("SP_DEF").unwrap(),
+				map.get("SPEED").unwrap()
+			)
+		}
+		write!(
+			fmt,
+			"\nName:\t\t{} [Lv.{}]\nTypes:\t\t{}\nNature:\t\t{}\nMoves:\t\t{}\nStats:\t\t{}\nBase Stats:\t{}\nIVs:\t\t{}\nEVs:\t\t{}\n",
+			self.name,
+			self.level as u32,
+			types_stringified,
+			self.nature.name,
+			moves_stringified,
+			stringify_map(&self.stats),
+			stringify_map(&self.base_stats),
+			stringify_map(&self.ivs),
+			stringify_map(&self.evs),
+		)
+	}
+}
+
 impl Pokemon {
 	fn new(
 		name: &str,
+		level: u32,
 		nature: Nature,
 		types: Vec<Type>,
 		moves: [Move; 4],
@@ -41,7 +82,7 @@ impl Pokemon {
 			evs: Stat::map(evs),
 			battle: Battle::new(),
 		};
-		pokemon.level(1);
+		pokemon.level(level);
 		pokemon.battle.stats = pokemon.stats.clone();
 		pokemon.battle.moves = pokemon.moves.clone();
 		pokemon
@@ -102,9 +143,16 @@ impl Pokemon {
 // POKEMONS
 
 impl Pokemon {
-	pub fn magearna(nature: Nature, moves: [Move; 4], ivs: [u32; 6], evs: [u32; 6]) -> Self {
+	pub fn magearna(
+		level: u32,
+		nature: Nature,
+		moves: [Move; 4],
+		ivs: [u32; 6],
+		evs: [u32; 6],
+	) -> Self {
 		Self::new(
 			"MAGEARNA",
+			level,
 			nature,
 			vec![Type::fairy(), Type::steel()],
 			moves,
@@ -114,9 +162,16 @@ impl Pokemon {
 		)
 	}
 
-	pub fn reshiram(nature: Nature, moves: [Move; 4], ivs: [u32; 6], evs: [u32; 6]) -> Self {
+	pub fn reshiram(
+		level: u32,
+		nature: Nature,
+		moves: [Move; 4],
+		ivs: [u32; 6],
+		evs: [u32; 6],
+	) -> Self {
 		Self::new(
 			"RESHIRAM",
+			level,
 			nature,
 			vec![Type::dragon(), Type::fire()],
 			moves,
@@ -126,9 +181,16 @@ impl Pokemon {
 		)
 	}
 
-	pub fn milotic(nature: Nature, moves: [Move; 4], ivs: [u32; 6], evs: [u32; 6]) -> Self {
+	pub fn milotic(
+		level: u32,
+		nature: Nature,
+		moves: [Move; 4],
+		ivs: [u32; 6],
+		evs: [u32; 6],
+	) -> Self {
 		Self::new(
 			"MILOTIC",
+			level,
 			nature,
 			vec![Type::water()],
 			moves,
@@ -138,9 +200,16 @@ impl Pokemon {
 		)
 	}
 
-	pub fn charizard(nature: Nature, moves: [Move; 4], ivs: [u32; 6], evs: [u32; 6]) -> Self {
+	pub fn charizard(
+		level: u32,
+		nature: Nature,
+		moves: [Move; 4],
+		ivs: [u32; 6],
+		evs: [u32; 6],
+	) -> Self {
 		Self::new(
 			"CHARIZARD",
+			level,
 			nature,
 			vec![Type::fire(), Type::flying()],
 			moves,

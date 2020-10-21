@@ -2,7 +2,7 @@ use super::HashMap;
 
 #[derive(Debug, Clone)]
 pub struct Nature {
-	name: String,
+	pub name: String,
 	inc_stat: String,
 	dec_stat: String,
 }
