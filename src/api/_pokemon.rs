@@ -45,7 +45,7 @@ impl Display for Pokemon {
 		}
 		write!(
 			fmt,
-			"\nName:\t\t{} [Lv.{}]\nTypes:\t\t{}\nNature:\t\t{}\nMoves:\t\t{}\nStats:\t\t{}\nBase Stats:\t{}\nIVs:\t\t{}\nEVs:\t\t{}\n",
+			"\nName:\t\t{} [Lv.{}]\nTypes:\t\t{}\nNature:\t\t{}\nMoves:\t\t{}\nStats:\t\t{}\nBase Stats:\t{}\nIVs:\t\t{}\nEVs:\t\t{}\n\nBATTLE\nStats:\t\t{}\nFainted:\t{}\n",
 			self.name,
 			self.level as u32,
 			types_stringified,
@@ -55,6 +55,8 @@ impl Display for Pokemon {
 			stringify_map(&self.base_stats),
 			stringify_map(&self.ivs),
 			stringify_map(&self.evs),
+			stringify_map(&self.battle.stats),
+			self.battle.fainted,
 		)
 	}
 }
@@ -95,21 +97,19 @@ impl Pokemon {
 		}
 	}
 
-	pub fn use_move(&mut self, _move: &str, target: &mut Pokemon) {
+	pub fn use_move(&mut self, _move: &str, target: &mut Pokemon) -> (bool, String) {
 		let moves = self.battle.moves.clone();
 		let mut moves_tried: Vec<Move> = Vec::new();
 		let mut move_found = false;
 		for mut m in moves {
-			if m.name == _move {
+			if m.name == _move.to_uppercase() {
 				m.effect(self, target);
 				move_found = true;
 			}
 			moves_tried.push(m);
 		}
 		self.battle.moves = moves_tried;
-		if !move_found {
-			println!("No such move in this Pokemon's arsenal!");
-		}
+		(move_found, _move.to_uppercase())
 	}
 
 	fn upgrade_stat(&mut self, stat_to_upgrade: &str) {
